@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.17/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.17",
+  "version": "1.0.0",
+  "id": "{{BOT_APP_ID}}",
+  "developer": {
+    "name": "{{COMPANY_NAME}}",
+    "websiteUrl": "{{PUBLIC_BASE_URL}}",
+    "privacyUrl": "{{PUBLIC_BASE_URL}}/healthz",
+    "termsOfUseUrl": "{{PUBLIC_BASE_URL}}/healthz"
+  },
+  "name": { "short": "Recall", "full": "Recall — meeting memory" },
+  "description": {
+    "short": "Ask about your team's meetings: standups, decisions, action items.",
+    "full": "Recall summarizes Teams meetings that have transcription turned on and answers questions about them: what happened in yesterday's standup, what someone is working on, which action items are open, and why decisions were made. Every answer cites the meeting and timestamp."
+  },
+  "icons": { "color": "color.png", "outline": "outline.png" },
+  "accentColor": "#3B5BDB",
+  "bots": [
+    {
+      "botId": "{{BOT_APP_ID}}",
+      "scopes": ["personal", "team", "groupChat"],
+      "supportsFiles": false,
+      "isNotificationOnly": false,
+      "commandLists": [
+        {
+          "scopes": ["personal", "team", "groupChat"],
+          "commands": [
+            { "title": "/standup", "description": "Brief of the previous working day's standup" },
+            { "title": "/recap", "description": "Recap of the latest meeting" },
+            { "title": "/mine", "description": "My open action items" }
+          ]
+        }
+      ]
+    }
+  ],
+  "permissions": ["identity", "messageTeamMembers"],
+  "validDomains": ["{{PUBLIC_HOST}}"]
+}

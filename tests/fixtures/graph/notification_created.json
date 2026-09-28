@@ -1,0 +1,17 @@
+{
+  "value": [
+    {
+      "subscriptionId": "0cc28c98-4d2a-4a34-b850-815d7e6486ea",
+      "changeType": "created",
+      "tenantId": "2432b57b-0abd-43db-aa7b-16eadd115d34",
+      "clientState": "test-client-state",
+      "subscriptionExpirationDateTime": "2026-09-30T08:29:11.3173971+00:00",
+      "resource": "users/976f4b31-fd01-4e0b-9178-29cc40c14438/onlineMeetings('MSo5NzZmNGIzMS1mZDAxLTRlMGItOTE3OC0yOWNjNDBjMTQ0MzgqMCoqMTk6bWVldGluZ19Oelk0WVRrMVpqVXRZbVkwTmkwMEB0aHJlYWQudjI')/transcripts('MSMjMCMjZDAwYWU3NjUtNmM2Yi00NjQxLTgwMWQtMTkzMmFmMjEzNzdh')",
+      "resourceData": {
+        "id": "MSMjMCMjZDAwYWU3NjUtNmM2Yi00NjQxLTgwMWQtMTkzMmFmMjEzNzdh",
+        "@odata.type": "#Microsoft.Graph.callTranscript",
+        "@odata.id": "users/976f4b31-fd01-4e0b-9178-29cc40c14438/onlineMeetings('MSo5NzZmNGIzMS1mZDAxLTRlMGItOTE3OC0yOWNjNDBjMTQ0MzgqMCoqMTk6bWVldGluZ19Oelk0WVRrMVpqVXRZbVkwTmkwMEB0aHJlYWQudjI')/transcripts('MSMjMCMjZDAwYWU3NjUtNmM2Yi00NjQxLTgwMWQtMTkzMmFmMjEzNzdh')"
+      }
+    }
+  ]
+}

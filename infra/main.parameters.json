@@ -1,0 +1,20 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": { "value": "${AZURE_ENV_NAME}" },
+    "location": { "value": "${AZURE_LOCATION}" },
+    "containerImage": { "value": "${SERVICE_APP_IMAGE_NAME=mcr.microsoft.com/k8se/quickstart:latest}" },
+    "postgresPassword": { "value": "${POSTGRES_PASSWORD}" },
+    "anthropicApiKey": { "value": "${ANTHROPIC_API_KEY=}" },
+    "graphTenantId": { "value": "${GRAPH_TENANT_ID=}" },
+    "graphClientId": { "value": "${GRAPH_CLIENT_ID=}" },
+    "graphClientSecret": { "value": "${GRAPH_CLIENT_SECRET=}" },
+    "graphClientState": { "value": "${GRAPH_CLIENT_STATE=}" },
+    "botAppId": { "value": "${BOT_APP_ID=}" },
+    "botAppPassword": { "value": "${BOT_APP_PASSWORD=}" },
+    "customDomain": { "value": "${CUSTOM_DOMAIN=}" },
+    "alertEmail": { "value": "${ALERT_EMAIL=}" },
+    "postgresSku": { "value": "${POSTGRES_SKU=Standard_B1ms}" }
+  }
+}

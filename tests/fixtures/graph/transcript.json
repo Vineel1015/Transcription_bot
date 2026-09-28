@@ -1,0 +1,14 @@
+{
+  "id": "MSMjMCMjZDAwYWU3NjUtNmM2Yi00NjQxLTgwMWQtMTkzMmFmMjEzNzdh",
+  "meetingId": "MSo5NzZmNGIzMS1mZDAxLTRlMGItOTE3OC0yOWNjNDBjMTQ0MzgqMCoqMTk6bWVldGluZ19Oelk0WVRrMVpqVXRZbVkwTmkwMEB0aHJlYWQudjI",
+  "callId": "af630fe0-04d3-4559-8cf9-91fe45e36296",
+  "transcriptContentUrl": "users/976f4b31-fd01-4e0b-9178-29cc40c14438/onlineMeetings/MSo5NzZmNGIzMS1mZDAxLTRlMGItOTE3OC0yOWNjNDBjMTQ0MzgqMCoqMTk6bWVldGluZ19Oelk0WVRrMVpqVXRZbVkwTmkwMEB0aHJlYWQudjI/transcripts/MSMjMCMjZDAwYWU3NjUtNmM2Yi00NjQxLTgwMWQtMTkzMmFmMjEzNzdh/content",
+  "createdDateTime": "2026-09-25T09:30:04Z",
+  "endDateTime": "2026-09-25T09:40:50Z",
+  "meetingOrganizer": {
+    "user": {
+      "id": "976f4b31-fd01-4e0b-9178-29cc40c14438",
+      "userIdentityType": "aadUser"
+    }
+  }
+}

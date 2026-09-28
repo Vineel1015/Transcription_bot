@@ -1,0 +1,7 @@
+{
+  "id": "0cc28c98-4d2a-4a34-b850-815d7e6486ea",
+  "resource": "communications/onlineMeetings/getAllTranscripts",
+  "changeType": "created",
+  "expirationDateTime": "2026-09-30T08:00:00Z",
+  "clientState": "test-client-state"
+}

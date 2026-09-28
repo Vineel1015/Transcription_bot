@@ -1,0 +1,61 @@
+WEBVTT
+
+p-0001
+00:00:06.000 --> 00:00:40.000
+<v Hannah Lee>Welcome to sprint planning. We have about thirty minutes. Goal for this sprint is getting the checkout address form to one hundred percent and the new staging environment usable by everyone. Let's start with capacity. Priya is out Thursday, Diego is at half capacity because of the release regression pass.</v>
+
+p-0002
+00:01:10.000 --> 00:02:05.000
+<v Priya Shah>For backend, the top item is the session service. Now that we decided not to use Redis, the session service can read straight from Postgres, which removes about three days of work from the estimate. I'd estimate the session service change at five points. The billing rollback runbook is also on my list but that's small.</v>
+
+p-0003
+00:03:00.000 --> 00:04:10.000
+<v Marcus Chen>Frontend has the address form rollout, which is mostly waiting on metrics, and the new saved addresses page, which is eight points. I'm worried about the saved addresses page, the designs aren't final. I'd rather not commit to it until design signs off.</v>
+
+p-0004
+00:04:40.000 --> 00:05:30.000
+<v Hannah Lee>Agreed, let's not commit to saved addresses. We'll take it as a stretch goal only if designs land by Tuesday. Marcus, can you ask design for a firm date?</v>
+
+p-0005
+00:05:31.000 --> 00:05:40.000
+<v Marcus Chen>Yes, I'll ask them today.</v>
+
+p-0006
+00:07:00.000 --> 00:08:30.000
+<v Aisha Okafor>Platform: staging DNS is fixed, Azure support found that the private DNS zone was linked to the wrong virtual network. So staging is usable now. This sprint I want to finish the monitoring alerts and set up the deploy pipeline for staging with the approval gate for production. Maybe eight points total.</v>
+
+p-0007
+00:10:00.000 --> 00:11:40.000
+<v Diego Ramirez>QA: I finally got the SSO test accounts, so the SSO test plan is unblocked. I want to automate the login flows this sprint. Also the checkout tests, Marcus and I fixed the flakiness, it was the mock payment provider timing out under load, so we raised the timeout and added a retry around the webhook.</v>
+
+p-0008
+00:12:30.000 --> 00:14:10.000
+<v Hannah Lee>Good. One question we should settle: do we move the nightly batch jobs to the new queue this sprint or next? The old cron box is due for patching.</v>
+
+p-0009
+00:15:00.000 --> 00:16:40.000
+<v Aisha Okafor>I'd say next sprint. The new queue doesn't have the dead letter handling yet, and I don't want to move billing jobs onto something without it. Let's patch the cron box one more time.</v>
+
+p-0010
+00:17:20.000 --> 00:18:10.000
+<v Priya Shah>Agreed, next sprint, and I can build the dead letter handling as part of it.</v>
+
+p-0011
+00:19:00.000 --> 00:20:30.000
+<v Hannah Lee>Decision then: nightly jobs move to the new queue next sprint, after dead letter handling exists. Aisha patches the cron box this sprint. Priya owns dead letter handling next sprint.</v>
+
+p-0012
+00:22:00.000 --> 00:24:30.000
+<v Hannah Lee>So the sprint commitment is: session service on Postgres, address form to one hundred percent, staging deploy pipeline with the approval gate, monitoring alerts, SSO login automation, and the billing rollback runbook. Stretch goal is saved addresses if designs land by Tuesday. Total is about thirty-one points against a capacity of thirty-four.</v>
+
+p-0013
+00:25:00.000 --> 00:26:20.000
+<v Diego Ramirez>What about the mobile release? Is it still going out on the twelfth?</v>
+
+p-0014
+00:26:30.000 --> 00:27:40.000
+<v Hannah Lee>Still the twelfth. I'll confirm with product whether analytics needs to sign off on the address form before one hundred percent, I still owe everyone that answer.</v>
+
+p-0015
+00:28:00.000 --> 00:29:10.000
+<v Hannah Lee>Okay, that's planning. Thanks all, I'll update the board after this.</v>

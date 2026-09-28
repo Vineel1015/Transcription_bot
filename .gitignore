@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+data/
+dist/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.azure/

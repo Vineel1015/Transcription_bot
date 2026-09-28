@@ -1,0 +1,137 @@
+WEBVTT
+
+1a2b3c4d-0001
+00:00:04.120 --> 00:00:11.480
+<v Hannah Lee>Morning everyone, let's get going. Same order as usual, Priya, you want to kick us off?</v>
+
+1a2b3c4d-0002
+00:00:12.010 --> 00:00:31.900
+<v Priya Shah>Sure. So the big one: I finished the Postgres 16 migration for the billing service yesterday afternoon. Cutover went clean, replication lag was under a second the whole time, and I switched the read replicas over this morning.</v>
+
+1a2b3c4d-0003
+00:00:32.300 --> 00:00:33.100
+<v Hannah Lee>Nice.</v>
+
+1a2b3c4d-0004
+00:00:33.500 --> 00:01:02.700
+<v Priya Shah>Today I'm cleaning up the old cluster config and removing the dual-write flag from the billing code. The one thing still missing is a rollback runbook. If we had to go back to the old cluster right now it would be tribal knowledge, which isn't great. I'll write the rollback runbook for the billing database by Wednesday.</v>
+
+1a2b3c4d-0005
+00:01:03.200 --> 00:01:10.400
+<v Hannah Lee>Great, thanks. Anything blocking you?</v>
+
+1a2b3c4d-0006
+00:01:10.900 --> 00:01:16.300
+<v Priya Shah>Nope, nothing blocking. Marcus, over to you.</v>
+
+1a2b3c4d-0007
+00:01:17.000 --> 00:01:49.600
+<v Marcus Chen>Yesterday I shipped the new checkout address form behind the feature flag, it's at five percent of traffic. Conversion looks flat so far which is what we wanted. I also spent way too long on the checkout end-to-end tests. They're flaky again, about one run in four fails on the payment step, and I think it's a timing issue with the mock payment provider.</v>
+
+1a2b3c4d-0008
+00:01:50.100 --> 00:02:14.800
+<v Marcus Chen>Today I want to bump the flag to twenty-five percent if the error rate stays under the threshold, and then actually fix those tests. Diego, could we pair on the flaky checkout tests? I'd like to get that sorted by end of day Monday so it's not hanging over the release.</v>
+
+1a2b3c4d-0009
+00:02:15.300 --> 00:02:19.700
+<v Diego Ramirez>Yeah, happy to. I'll grab time after lunch.</v>
+
+1a2b3c4d-0010
+00:02:20.200 --> 00:02:27.400
+<v Hannah Lee>Okay so Marcus and Diego pairing on the flaky checkout tests, done by end of day Monday.</v>
+
+1a2b3c4d-0011
+00:02:28.000 --> 00:02:30.000
+<v Marcus Chen>Yep. That's me.</v>
+
+1a2b3c4d-0012
+00:02:31.500 --> 00:03:12.900
+<v Aisha Okafor>Okay, platform side. Yesterday I got the new staging environment provisioned with the Bicep templates, so that's all infrastructure as code now. The container apps are up and the database is on a private endpoint. The problem is DNS. The private endpoint doesn't resolve from inside the container apps environment, so the apps can't reach Postgres. I've tried the private DNS zone link twice and it's still not resolving.</v>
+
+1a2b3c4d-0013
+00:03:13.400 --> 00:03:31.800
+<v Aisha Okafor>So I'm blocked on that. I'll open a ticket with Azure support about the private endpoint DNS issue this morning, because I've burned a day on it already. In the meantime I'll keep working on the monitoring alerts.</v>
+
+1a2b3c4d-0014
+00:03:32.300 --> 00:03:45.600
+<v Hannah Lee>Makes sense. Escalate it. If support is slow tell me and I'll ping our account manager. Anything else?</v>
+
+1a2b3c4d-0015
+00:03:46.100 --> 00:04:12.700
+<v Aisha Okafor>One more thing, and I think we should decide it now. For session lookups we were going to put a Redis cache in front of Postgres. I ran the load test yesterday against Postgres alone, and p99 for the session lookup was four milliseconds at double our peak traffic. I don't think we need the cache.</v>
+
+1a2b3c4d-0016
+00:04:13.200 --> 00:04:26.500
+<v Priya Shah>Agreed. And the billing migration showed the same thing, Postgres 16 is handling it fine. One less service to run and patch.</v>
+
+1a2b3c4d-0017
+00:04:27.000 --> 00:04:52.300
+<v Hannah Lee>Okay, let's make the call. We drop the Redis cache for session lookups and read from Postgres directly. The load test numbers are good, and it's one less thing to operate. If p99 goes over twenty milliseconds in production we revisit. Aisha, can you note that in the design doc?</v>
+
+1a2b3c4d-0018
+00:04:52.800 --> 00:04:55.100
+<v Aisha Okafor>Will do.</v>
+
+1a2b3c4d-0019
+00:04:56.000 --> 00:05:40.400
+<v Diego Ramirez>Me next. Yesterday I finished the regression pass on the mobile release candidate, everything passed except two cosmetic bugs I filed. I also started the test plan for single sign-on, but I'm blocked there. I don't have test accounts in the new identity tenant, so I can't test the SSO login flows at all. I asked IT on Tuesday and haven't heard back.</v>
+
+1a2b3c4d-0020
+00:05:41.000 --> 00:05:58.300
+<v Diego Ramirez>So today it's the pairing with Marcus on checkout, and I'll write the rest of the SSO test cases so they're ready to run the moment I get accounts.</v>
+
+1a2b3c4d-0021
+00:05:58.900 --> 00:06:14.200
+<v Hannah Lee>I'll chase IT for the test accounts today, that's been sitting too long. Anything else, Diego?</v>
+
+1a2b3c4d-0022
+00:06:14.800 --> 00:06:17.100
+<v Diego Ramirez>No, that's it.</v>
+
+1a2b3c4d-0023
+00:06:18.000 --> 00:07:05.600
+<v Hannah Lee>Okay. From me, I had the roadmap review with product yesterday. The short version is the release date holds for the twelfth. They want the address form at a hundred percent before then, so Marcus that's on your path. I'm also interviewing two backend candidates today, so I'll be slow on chat this afternoon.</v>
+
+1a2b3c4d-0024
+00:07:06.200 --> 00:07:32.500
+<v Marcus Chen>Quick question, for the hundred percent rollout, do we need the analytics team to sign off, or is it just our error-rate threshold?</v>
+
+1a2b3c4d-0025
+00:07:33.100 --> 00:07:51.900
+<v Hannah Lee>Good question, I actually don't know. I'll find out. Let's not block on it for the twenty-five percent step though.</v>
+
+1a2b3c4d-0026
+00:07:52.400 --> 00:08:31.200
+<v Priya Shah>One heads up for everyone, the old billing cluster goes read-only on Monday and gets deleted the Monday after. If anything still reads from it, it'll break. I've checked our services but if you have scripts or notebooks pointing at it, move them this week.</v>
+
+1a2b3c4d-0027
+00:08:31.800 --> 00:08:36.400
+<v Marcus Chen>Good to know, I think I have one notebook. I'll move it.</v>
+
+1a2b3c4d-0028
+00:08:37.000 --> 00:09:22.700
+<v Aisha Okafor>Related, the monitoring alerts I'm working on will page if anything connects to the old cluster after Monday, so we'll know. I'm also adding alerts for the job queue depth and for failed backups, which we didn't have before. Should be done today if the DNS thing doesn't eat the whole day.</v>
+
+1a2b3c4d-0029
+00:09:23.300 --> 00:10:04.900
+<v Hannah Lee>Great. Let me just recap the actions so we're clear. Priya writes the billing rollback runbook by Wednesday. Marcus and Diego fix the flaky checkout tests by end of day Monday. Aisha opens the Azure support ticket on the DNS issue today. I chase IT for the SSO test accounts and find out about analytics sign-off for the full rollout.</v>
+
+1a2b3c4d-0030
+00:10:05.500 --> 00:10:12.200
+<v Diego Ramirez>And the Redis decision goes in the design doc.</v>
+
+1a2b3c4d-0031
+00:10:12.700 --> 00:10:40.300
+<v Hannah Lee>Right, Aisha's got that. One last thing, next week's retro moves to Thursday because of the offsite. I'll send the updated invite. Okay, that's it, thanks everyone, have a good weekend.</v>
+
+1a2b3c4d-0032
+00:10:40.900 --> 00:10:43.000
+<v Priya Shah>Thanks, bye.</v>
+
+1a2b3c4d-0033
+00:10:43.400 --> 00:10:45.200
+<v Marcus Chen>Um</v>
+
+1a2b3c4d-0034
+00:10:45.600 --> 00:10:47.800
+<v Marcus Chen>see you.</v>

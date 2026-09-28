@@ -1,0 +1,27 @@
+{
+  "overview": "Priya finished the billing Postgres 16 migration and will write a rollback runbook. Marcus shipped the checkout address form at 5% and will pair with Diego on flaky checkout tests. Aisha is blocked on private endpoint DNS in staging and will open an Azure support ticket. The team decided to drop the Redis cache for session lookups. Diego is blocked on SSO test accounts.",
+  "kind": "standup",
+  "topics": [
+    {"title": "Billing Postgres 16 migration", "summary": "Cutover completed; old cluster goes read-only Monday.", "start_ms": 12010},
+    {"title": "Staging private endpoint DNS", "summary": "Container apps can't resolve the Postgres private endpoint.", "start_ms": 151500},
+    {"title": "Redis cache for sessions", "summary": "Load test showed p99 of 4 ms on Postgres alone.", "start_ms": 226100}
+  ],
+  "decisions": [
+    {"decision": "Drop the Redis cache for session lookups and read from Postgres directly", "rationale": "Load test p99 was 4 ms at double peak traffic; one less service to operate. Revisit if production p99 exceeds 20 ms.", "start_ms": 267000}
+  ],
+  "action_items": [
+    {"description": "Write the rollback runbook for the billing database", "owner": "Priya Shah", "due": "2026-09-30", "start_ms": 33500},
+    {"description": "Pair to fix the flaky checkout end-to-end tests", "owner": "Marcus Chen", "due": "2026-09-28", "start_ms": 110100},
+    {"description": "Open a ticket with Azure support about the private endpoint DNS issue", "owner": "Aisha Okafor", "due": "2026-09-25", "start_ms": 193400},
+    {"description": "Chase IT for SSO test accounts", "owner": "Hannah Lee", "due": "2026-09-25", "start_ms": 358900}
+  ],
+  "person_updates": [
+    {"speaker": "Priya Shah", "done": ["Finished the Postgres 16 migration for billing", "Switched read replicas over"], "next": ["Clean up old cluster config", "Remove the dual-write flag"], "blockers": [], "start_ms": 12010},
+    {"speaker": "Marcus Chen", "done": ["Shipped the checkout address form behind a flag at 5%"], "next": ["Raise the flag to 25%", "Fix flaky checkout tests with Diego"], "blockers": [], "start_ms": 77000},
+    {"speaker": "Aisha Okafor", "done": ["Provisioned staging with Bicep"], "next": ["Open Azure support ticket", "Monitoring alerts"], "blockers": ["Private endpoint DNS doesn't resolve from the container apps environment"], "start_ms": 151500},
+    {"speaker": "Diego Ramirez", "done": ["Finished regression pass on the mobile release candidate"], "next": ["Pair with Marcus on checkout tests", "Write SSO test cases"], "blockers": ["No test accounts in the new identity tenant for SSO"], "start_ms": 296000},
+    {"speaker": "Hannah Lee", "done": ["Roadmap review with product; release date holds"], "next": ["Interview two backend candidates"], "blockers": [], "start_ms": 378000}
+  ],
+  "completed_prior_action_item_ids": ["{PRIOR_ID}"],
+  "open_questions": ["Does the analytics team need to sign off before the 100% address form rollout?"]
+}

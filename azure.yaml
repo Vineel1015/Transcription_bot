@@ -1,0 +1,18 @@
+# Azure Developer CLI: `azd auth login && azd up` provisions infra/ and deploys the app container.
+name: recall
+metadata:
+  template: recall@0.1.0
+services:
+  app:
+    project: .
+    language: python
+    host: containerapp
+    docker:
+      path: Dockerfile
+hooks:
+  preprovision:
+    posix: { shell: sh, run: ./infra/hooks/preprovision.sh, interactive: false }
+    windows: { shell: pwsh, run: ./infra/hooks/preprovision.ps1, interactive: false }
+  postdeploy:
+    posix: { shell: sh, run: ./infra/hooks/postdeploy.sh, interactive: false }
+    windows: { shell: pwsh, run: ./infra/hooks/postdeploy.ps1, interactive: false }

@@ -1,0 +1,37 @@
+services:
+  app:
+    build: .
+    ports: ["8000:8000"]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+asyncpg://recall:recall@postgres:5432/recall
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      DEV_AUTH: ${DEV_AUTH:-true}
+      MEDIA_LOCAL_DIR: /app/data/media
+    volumes:
+      - media:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    stop_grace_period: 40s  # workers get 30 s to finish running jobs on SIGTERM
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: recall
+      POSTGRES_PASSWORD: recall
+      POSTGRES_DB: recall
+    ports: ["5432:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U recall -d recall"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  pgdata:
+  media:

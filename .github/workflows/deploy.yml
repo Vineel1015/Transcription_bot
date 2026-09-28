@@ -1,0 +1,91 @@
+# Deploys main to dev, then prod (prod needs approval via the GitHub "prod" environment's protection rule).
+#
+# Per GitHub environment (dev, prod), set these variables:
+#   AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID   federated credential (OIDC) — no stored Azure secrets
+#   AZURE_RESOURCE_GROUP, AZURE_CONTAINER_REGISTRY, AZURE_CONTAINER_APP_NAME, AZURE_MIGRATION_JOB_NAME,
+#   AZURE_KEY_VAULT_NAME                                      from `azd env get-values` after the first `azd up`
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    strategy:
+      max-parallel: 1
+      fail-fast: true
+      matrix:
+        env: [dev, prod]
+    environment: ${{ matrix.env }}
+    runs-on: ubuntu-latest
+    env:
+      RG: ${{ vars.AZURE_RESOURCE_GROUP }}
+      APP: ${{ vars.AZURE_CONTAINER_APP_NAME }}
+      JOB: ${{ vars.AZURE_MIGRATION_JOB_NAME }}
+      IMAGE: ${{ vars.AZURE_CONTAINER_REGISTRY }}/recall:${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push image
+        run: |
+          az acr login --name "${{ vars.AZURE_CONTAINER_REGISTRY }}"
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
+
+      - name: Remember the current image (for rollback)
+        id: previous
+        run: |
+          echo "image=$(az containerapp show -g "$RG" -n "$APP" --query 'properties.template.containers[0].image' -o tsv)" >> "$GITHUB_OUTPUT"
+
+      - name: Run migrations
+        run: |
+          az containerapp job update -g "$RG" -n "$JOB" --image "$IMAGE" -o none
+          execution=$(az containerapp job start -g "$RG" -n "$JOB" --query name -o tsv)
+          for _ in $(seq 1 60); do
+            status=$(az containerapp job execution show -g "$RG" -n "$JOB" --job-execution-name "$execution" --query properties.status -o tsv)
+            if [ "$status" = "Succeeded" ]; then exit 0; fi
+            if [ "$status" = "Failed" ]; then echo "migration failed"; exit 1; fi
+            sleep 10
+          done
+          echo "migration timed out"; exit 1
+
+      - name: Deploy new revision
+        run: az containerapp update -g "$RG" -n "$APP" --image "$IMAGE" -o none
+
+      - name: Smoke test
+        id: smoke
+        run: |
+          fqdn=$(az containerapp show -g "$RG" -n "$APP" --query properties.configuration.ingress.fqdn -o tsv)
+          token=$(az keyvault secret show --vault-name "${{ vars.AZURE_KEY_VAULT_NAME }}" -n service-token --query value -o tsv)
+          echo "::add-mask::$token"
+          for _ in $(seq 1 30); do
+            if curl -fsS "https://$fqdn/healthz?deep=1" > /dev/null; then break; fi
+            sleep 10
+          done
+          curl -fsS "https://$fqdn/healthz?deep=1"
+          # a fast-path question: exercises auth, routing and the database without a model call
+          curl -fsS -X POST "https://$fqdn/v1/ask" \
+            -H "Authorization: Bearer $token" -H "Content-Type: application/json" \
+            -d '{"question": "/mine"}' | grep -q '"intent":"my_actions"'
+
+      - name: Roll back on failure
+        if: failure() && steps.previous.outputs.image != ''
+        run: |
+          echo "rolling back to ${{ steps.previous.outputs.image }}"
+          az containerapp update -g "$RG" -n "$APP" --image "${{ steps.previous.outputs.image }}" -o none
